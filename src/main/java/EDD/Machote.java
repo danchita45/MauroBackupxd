@@ -7,8 +7,13 @@ package EDD;
 
 /**
  *
- * @author D45
+ * @author Danchita45
  */
-public class LeerSucs  {
-    Sucursales suc = new Sucursales();
+public interface Machote {
+    public boolean vacio();
+        
+    public boolean llena ();
+    public boolean inserta(Object obj);
+    public Object elimina();
+    
 }

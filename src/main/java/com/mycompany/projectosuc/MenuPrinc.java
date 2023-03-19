@@ -4,27 +4,58 @@
  */
 package com.mycompany.projectosuc;
 
+import EDD.ArchivoSuc;
+import EDD.ListaDoblementeLigada;
+import EDD.NodoLista;
 import EDD.Sucursales;
+import java.util.LinkedList;
+import java.util.Set;
+import java.util.StringTokenizer;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 /**
  *
  * @author danchita45
  */
-public class MenuPrinc extends javax.swing.JFrame
-{
+public class MenuPrinc extends javax.swing.JFrame {
 
     private Sucursales sucs;
-    
+
     /**
      * Creates new form MenuPrinc
      */
-    public MenuPrinc()
-    {
+    public MenuPrinc() {
         initComponents();
-        sucs = new Sucursales();
-        this.jTableSucs.setModel((TableModel) sucs);
-        
+        ListaDoblementeLigada sucs = new ListaDoblementeLigada();
+        EDD.ArchivoSuc archivo = new ArchivoSuc("sucursales.txt");
+        LinkedList<String> lineas = archivo.obtenerTexto();
+        DefaultTableModel dt = new DefaultTableModel(new String[]{"No.Sucursal", "Nombre", "Zona"}, lineas.size());
+        jTableSucs.setModel(dt);
+        TableModel modeldata = jTableSucs.getModel();
+
+        if (lineas != null) {
+            for (int i = 0; i < lineas.size(); i++) {
+                //creamos un nuevo nodo lista y una sucursal donde Transformaremos los datos en string a obj
+
+                NodoLista nl = new NodoLista();
+                Sucursales newsuc = new Sucursales();
+                String linea = lineas.get(i);
+                StringTokenizer tokens = new StringTokenizer(linea, ";");
+                
+                newsuc.setNoSuc(Integer.parseInt(tokens.nextToken()));
+                newsuc.setNombre(tokens.nextToken());
+                newsuc.setZona(Integer.parseInt(tokens.nextToken()));
+                //obtenemos de etiqueta el nombre de la sucursal
+                nl.setEtiqueta(newsuc.getNombre());
+                nl.setTObj(newsuc);
+                sucs.inserta(nl);
+                modeldata.setValueAt(newsuc.getNoSuc(), i, 0);
+                modeldata.setValueAt(newsuc.getNombre(), i, 1);
+                modeldata.setValueAt(newsuc.getZona(), i, 2);
+            }
+        }
     }
 
     /**
@@ -38,6 +69,7 @@ public class MenuPrinc extends javax.swing.JFrame
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableSucs = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         altaSuc = new javax.swing.JMenu();
         bajaSuc = new javax.swing.JMenu();
@@ -45,6 +77,8 @@ public class MenuPrinc extends javax.swing.JFrame
         consultaEspecifica = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setAlwaysOnTop(true);
+        setResizable(false);
 
         jTableSucs.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -78,6 +112,13 @@ public class MenuPrinc extends javax.swing.JFrame
             jTableSucs.getColumnModel().getColumn(1).setResizable(false);
         }
 
+        jButton1.setText("Actualizar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         altaSuc.setText("Alta Sucursal");
         altaSuc.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -107,19 +148,27 @@ public class MenuPrinc extends javax.swing.JFrame
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(95, 95, 95)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(95, 95, 95)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(273, 273, 273)
+                        .addComponent(jButton1)))
                 .addContainerGap(119, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(46, 46, 46)
+                .addGap(11, 11, 11)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(45, Short.MAX_VALUE))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void altaSucMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_altaSucMouseClicked
@@ -136,46 +185,42 @@ public class MenuPrinc extends javax.swing.JFrame
         this.dispose();
     }//GEN-LAST:event_bajaSucMouseClicked
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    MenuPrinc m = new MenuPrinc();
+    m.setVisible(true);
+    this.dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[])
-    {
+    public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        try
-        {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels())
-            {
-                if ("Nimbus".equals(info.getName()))
-                {
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex)
-        {
+        } catch (ClassNotFoundException ex) {
             java.util.logging.Logger.getLogger(MenuPrinc.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex)
-        {
+        } catch (InstantiationException ex) {
             java.util.logging.Logger.getLogger(MenuPrinc.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex)
-        {
+        } catch (IllegalAccessException ex) {
             java.util.logging.Logger.getLogger(MenuPrinc.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex)
-        {
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MenuPrinc.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable()
-        {
-            public void run()
-            {
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
                 new MenuPrinc().setVisible(true);
             }
         });
@@ -186,6 +231,7 @@ public class MenuPrinc extends javax.swing.JFrame
     private javax.swing.JMenu bajaSuc;
     private javax.swing.JMenu consultaEspecifica;
     private javax.swing.JMenu consultaGeneral;
+    private javax.swing.JButton jButton1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableSucs;

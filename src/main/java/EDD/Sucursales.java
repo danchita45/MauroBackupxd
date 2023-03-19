@@ -20,7 +20,7 @@ public class Sucursales
     @Override
     public String toString()
     {
-        return "Sucursales{" + "noSuc=" + noSuc + ", nombre=" + nombre + ", zona=" + zona + ", cI=" + cI + ", cE=" + cE + '}';
+        return  noSuc + ";" + nombre + ";" + zona+";";
     }
 
     public int getNoSuc()

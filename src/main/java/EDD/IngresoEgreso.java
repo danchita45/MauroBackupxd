@@ -14,17 +14,39 @@ public class IngresoEgreso
     double monto;
     String fecha;
     double descuento;
+    int sucursal;
+    int EI;
+    
 
     public IngresoEgreso()
     {
     }
 
-    public IngresoEgreso(double monto, String fecha, double descuento)
-    {
+    public IngresoEgreso(double monto, String fecha, double descuento, int sucursal, int EI) {
         this.monto = monto;
         this.fecha = fecha;
         this.descuento = descuento;
+        this.sucursal = sucursal;
+        this.EI = EI;
     }
+
+    public int getSucursal() {
+        return sucursal;
+    }
+
+    public void setSucursal(int sucursal) {
+        this.sucursal = sucursal;
+    }
+
+    public int getEI() {
+        return EI;
+    }
+
+    public void setEI(int EI) {
+        this.EI = EI;
+    }
+
+   
 
     public double getMonto()
     {
@@ -57,10 +79,7 @@ public class IngresoEgreso
     }
 
     @Override
-    public String toString()
-    {
-        return "IngresoEgreso{" + "monto=" + monto + ", fecha=" + fecha + ", descuento=" + descuento + '}';
+    public String toString() {
+        return "IngresoEgreso{" + "monto=" + monto + ", fecha=" + fecha + ", descuento=" + descuento + ", sucursal=" + sucursal + ", EI=" + EI + '}';
     }
-    
-
 }
