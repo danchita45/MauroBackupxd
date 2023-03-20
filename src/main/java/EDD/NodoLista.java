@@ -26,7 +26,7 @@ public class NodoLista<T> {
 
     @Override
     public String toString() {
-        return "NodoLista{" + "etiqueta=" + etiqueta + ", TObj=" + TObj + ", sig=" + sig + ", ant=" + ant + '}';
+        return  etiqueta + ";" + TObj + ";" + sig + ";" + ant + ';';
     }
 
     public String getEtiqueta() {

@@ -14,13 +14,13 @@ public class Sucursales
     int noSuc;
     String nombre;
     int zona;
-    Object cI;
-    Object cE;
+    ListaDoblementeLigada cI;
+    ListaDoblementeLigada cE;
 
     @Override
     public String toString()
     {
-        return  noSuc + ";" + nombre + ";" + zona+";";
+        return  noSuc + ";" + nombre + ";" + zona+";" ;
     }
 
     public int getNoSuc()
@@ -58,7 +58,7 @@ public class Sucursales
         return cI;
     }
 
-    public void setcI(Object cI)
+    public void setcI(ListaDoblementeLigada cI)
     {
         this.cI = cI;
     }
@@ -68,12 +68,12 @@ public class Sucursales
         return cE;
     }
 
-    public void setcE(Object cE)
+    public void setcE(ListaDoblementeLigada cE)
     {
         this.cE = cE;
     }
 
-    public Sucursales(int noSuc, String nombre, int zona, Object cI, Object cE)
+    public Sucursales(int noSuc, String nombre, int zona, ListaDoblementeLigada cI, ListaDoblementeLigada cE)
     {
         this.noSuc = noSuc;
         this.nombre = nombre;

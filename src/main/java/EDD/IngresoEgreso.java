@@ -80,6 +80,6 @@ public class IngresoEgreso
 
     @Override
     public String toString() {
-        return "IngresoEgreso{" + "monto=" + monto + ", fecha=" + fecha + ", descuento=" + descuento + ", sucursal=" + sucursal + ", EI=" + EI + '}';
+        return  monto + ";" + fecha + ";" + descuento + ";" + sucursal + ";" + EI + ';';
     }
 }

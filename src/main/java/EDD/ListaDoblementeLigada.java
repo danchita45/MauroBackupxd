@@ -184,4 +184,11 @@ public class ListaDoblementeLigada {
             patras(s, aux);
         }
     }
+
+    @Override
+    public String toString() {
+        return r.toString();
+    }
+
+    
 }

@@ -5,6 +5,7 @@
 package com.mycompany.projectosuc;
 
 import EDD.ArchivoSuc;
+import EDD.IngresoEgreso;
 import EDD.ListaDoblementeLigada;
 import EDD.NodoLista;
 import EDD.Sucursales;
@@ -30,7 +31,11 @@ public class MenuPrinc extends javax.swing.JFrame {
         initComponents();
         ListaDoblementeLigada sucs = new ListaDoblementeLigada();
         EDD.ArchivoSuc archivo = new ArchivoSuc("sucursales.txt");
+        EDD.ArchivoSuc archivoI = new ArchivoSuc("Ingresos.txt");
+        EDD.ArchivoSuc archivoE = new ArchivoSuc("Egresos.txt");
         LinkedList<String> lineas = archivo.obtenerTexto();
+        LinkedList<String> lineasI = archivoI.obtenerTexto();
+        LinkedList<String> lineasE = archivoE.obtenerTexto();
         DefaultTableModel dt = new DefaultTableModel(new String[]{"No.Sucursal", "Nombre", "Zona"}, lineas.size());
         jTableSucs.setModel(dt);
         TableModel modeldata = jTableSucs.getModel();
@@ -43,11 +48,33 @@ public class MenuPrinc extends javax.swing.JFrame {
                 Sucursales newsuc = new Sucursales();
                 String linea = lineas.get(i);
                 StringTokenizer tokens = new StringTokenizer(linea, ";");
-                
                 newsuc.setNoSuc(Integer.parseInt(tokens.nextToken()));
                 newsuc.setNombre(tokens.nextToken());
                 newsuc.setZona(Integer.parseInt(tokens.nextToken()));
-                //obtenemos de etiqueta el nombre de la sucursal
+                newsuc.setcI(new ListaDoblementeLigada());
+                newsuc.setcE(new ListaDoblementeLigada());
+                for (int j = 0; j < lineasI.size(); j++) {
+                    NodoLista nodoI = new NodoLista();
+                    IngresoEgreso I = new IngresoEgreso();
+                    String lineaI = lineasI.get(j);
+                    
+                    StringTokenizer tokensI = new StringTokenizer(lineaI, ";");
+                    
+                    I.setMonto(Double.parseDouble(tokensI.nextToken()));
+                    I.setFecha(tokensI.nextToken());
+                    
+                    I.setDescuento(Double.parseDouble(tokensI.nextToken()));
+                    I.setSucursal(Integer.parseInt(tokensI.nextToken()));
+                    
+                    I.setEI(1);
+                    nodoI.setEtiqueta("Ingreso"+j);
+                    nodoI.setTObj(I);
+                    if(I.getSucursal()==newsuc.getNoSuc()){
+                        ListaDoblementeLigada copiadelista = (ListaDoblementeLigada) newsuc.getcI();  
+                        copiadelista.inserta(nodoI);
+                    }
+                }
+
                 nl.setEtiqueta(newsuc.getNombre());
                 nl.setTObj(newsuc);
                 sucs.inserta(nl);
@@ -75,6 +102,8 @@ public class MenuPrinc extends javax.swing.JFrame {
         bajaSuc = new javax.swing.JMenu();
         consultaGeneral = new javax.swing.JMenu();
         consultaEspecifica = new javax.swing.JMenu();
+        jMenu1 = new javax.swing.JMenu();
+        jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setAlwaysOnTop(true);
@@ -141,6 +170,22 @@ public class MenuPrinc extends javax.swing.JFrame {
         consultaEspecifica.setText("Consulta Especifica");
         jMenuBar1.add(consultaEspecifica);
 
+        jMenu1.setText("Ver I/E");
+        jMenu1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu1MouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(jMenu1);
+
+        jMenu2.setText("Registrar I/E");
+        jMenu2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu2MouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(jMenu2);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -186,10 +231,22 @@ public class MenuPrinc extends javax.swing.JFrame {
     }//GEN-LAST:event_bajaSucMouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    MenuPrinc m = new MenuPrinc();
-    m.setVisible(true);
-    this.dispose();
+        MenuPrinc m = new MenuPrinc();
+        m.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jMenu1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu1MouseClicked
+        IngresosEgresos E = new IngresosEgresos();
+        E.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jMenu1MouseClicked
+
+    private void jMenu2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu2MouseClicked
+        RegistrarIE r = new RegistrarIE();
+        r.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jMenu2MouseClicked
 
     /**
      * @param args the command line arguments
@@ -232,6 +289,8 @@ public class MenuPrinc extends javax.swing.JFrame {
     private javax.swing.JMenu consultaEspecifica;
     private javax.swing.JMenu consultaGeneral;
     private javax.swing.JButton jButton1;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableSucs;

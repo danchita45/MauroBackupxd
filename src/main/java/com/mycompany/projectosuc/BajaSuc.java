@@ -11,6 +11,7 @@ import EDD.Sucursales;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -111,10 +112,10 @@ public class BajaSuc extends javax.swing.JFrame {
                 sucs.inserta(nl);
             }
         }
-        sucs.eliminar(eliminaNoSuc.getText());
-        sucs.reescribe("sucursales.txt");
-        String linea = sucs.despConN();
-        
+        if(sucs.eliminar(eliminaNoSuc.getText())!=null){
+            JOptionPane.showMessageDialog(rootPane, "La sucursal ha sido Eliminada");
+            sucs.reescribe("sucursales.txt");
+        }
         menu.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
