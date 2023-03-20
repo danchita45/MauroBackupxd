@@ -1,6 +1,8 @@
 package EDD;
 
-public class ListaDoblementeLigada {
+import java.io.Serializable;
+
+public class ListaDoblementeLigada implements Serializable{
 
     NodoLista<Object> r = null;
     int t = 0;
@@ -99,18 +101,18 @@ public class ListaDoblementeLigada {
         }
         return s;
     }
-    
-    public void reescribe(String nombreArchivo){
+
+    public void reescribe(String nombreArchivo) {
         ArchivoSuc archivo = new ArchivoSuc(nombreArchivo);
         archivo.Limpiar();
-         while (r != null) {
+        while (r != null) {
             if (r.getAnt() == null) {
                 archivo.registrar(r.TObj.toString());
             } else {
                 if (r.getSig() == null) {
-                   archivo.registrar(r.TObj.toString());
+                    archivo.registrar(r.TObj.toString());
                 } else {
-                   archivo.registrar(r.TObj.toString());
+                    archivo.registrar(r.TObj.toString());
                 }
             }
             r = r.getSig();
@@ -164,13 +166,13 @@ public class ListaDoblementeLigada {
                 System.out.println("--->");
                 System.out.println(r.etiqueta);
                 Sucursales n = (Sucursales) r.TObj;
-                s+= n.getNoSuc() + ";" + n.getNombre() + ";" + n.getZona() + ";" +"\n";
-                aux = r.sig;                
-                muestras( );
+                s += n.getNoSuc() + ";" + n.getNombre() + ";" + n.getZona() + ";" + "\n";
+                aux = r.sig;
+                muestras();
             } else {
                 patras(s, aux);
             }
-        }else{
+        } else {
             System.out.println("lista vacia");
         }
     }
@@ -185,10 +187,24 @@ public class ListaDoblementeLigada {
         }
     }
 
+    public int count() {
+        int i = 0;
+        if (r != null) {
+            NodoLista aux = r;
+            do  {
+                i++;
+                aux = aux.sig;
+            }while(aux != null);
+            return i;
+        }else{
+            return i;
+        }
+        
+    }
+
     @Override
     public String toString() {
         return r.toString();
     }
 
-    
 }

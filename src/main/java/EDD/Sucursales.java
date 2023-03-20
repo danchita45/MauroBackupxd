@@ -4,11 +4,13 @@
  */
 package EDD;
 
+import java.io.Serializable;
+
 /**
  *
  * @author danchita45
  */
-public class Sucursales
+public class Sucursales implements Serializable
 {
 
     int noSuc;

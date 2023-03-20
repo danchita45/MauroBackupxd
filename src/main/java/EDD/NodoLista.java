@@ -1,6 +1,8 @@
 package EDD;
 
-public class NodoLista<T> {
+import java.io.Serializable;
+
+public class NodoLista<T>  implements Serializable{
 
     String etiqueta;
     Object TObj;

@@ -9,9 +9,14 @@ import EDD.IngresoEgreso;
 import EDD.ListaDoblementeLigada;
 import EDD.NodoLista;
 import EDD.Sucursales;
+import ioarchico.lsarchivo;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -20,7 +25,7 @@ import javax.swing.table.TableModel;
  *
  * @author danchita45
  */
-public class MenuPrinc extends javax.swing.JFrame {
+public class MenuPrinc extends javax.swing.JFrame implements Serializable{
 
     private Sucursales sucs;
 
@@ -28,60 +33,43 @@ public class MenuPrinc extends javax.swing.JFrame {
      * Creates new form MenuPrinc
      */
     public MenuPrinc() {
-        initComponents();
-        ListaDoblementeLigada sucs = new ListaDoblementeLigada();
-        EDD.ArchivoSuc archivo = new ArchivoSuc("sucursales.txt");
-        EDD.ArchivoSuc archivoI = new ArchivoSuc("Ingresos.txt");
-        EDD.ArchivoSuc archivoE = new ArchivoSuc("Egresos.txt");
-        LinkedList<String> lineas = archivo.obtenerTexto();
-        LinkedList<String> lineasI = archivoI.obtenerTexto();
-        LinkedList<String> lineasE = archivoE.obtenerTexto();
-        DefaultTableModel dt = new DefaultTableModel(new String[]{"No.Sucursal", "Nombre", "Zona"}, lineas.size());
-        jTableSucs.setModel(dt);
-        TableModel modeldata = jTableSucs.getModel();
-
-        if (lineas != null) {
-            for (int i = 0; i < lineas.size(); i++) {
-                //creamos un nuevo nodo lista y una sucursal donde Transformaremos los datos en string a obj
-
-                NodoLista nl = new NodoLista();
-                Sucursales newsuc = new Sucursales();
-                String linea = lineas.get(i);
-                StringTokenizer tokens = new StringTokenizer(linea, ";");
-                newsuc.setNoSuc(Integer.parseInt(tokens.nextToken()));
-                newsuc.setNombre(tokens.nextToken());
-                newsuc.setZona(Integer.parseInt(tokens.nextToken()));
-                newsuc.setcI(new ListaDoblementeLigada());
-                newsuc.setcE(new ListaDoblementeLigada());
-                for (int j = 0; j < lineasI.size(); j++) {
-                    NodoLista nodoI = new NodoLista();
-                    IngresoEgreso I = new IngresoEgreso();
-                    String lineaI = lineasI.get(j);
-                    
-                    StringTokenizer tokensI = new StringTokenizer(lineaI, ";");
-                    
-                    I.setMonto(Double.parseDouble(tokensI.nextToken()));
-                    I.setFecha(tokensI.nextToken());
-                    
-                    I.setDescuento(Double.parseDouble(tokensI.nextToken()));
-                    I.setSucursal(Integer.parseInt(tokensI.nextToken()));
-                    
-                    I.setEI(1);
-                    nodoI.setEtiqueta("Ingreso"+j);
-                    nodoI.setTObj(I);
-                    if(I.getSucursal()==newsuc.getNoSuc()){
-                        ListaDoblementeLigada copiadelista = (ListaDoblementeLigada) newsuc.getcI();  
-                        copiadelista.inserta(nodoI);
-                    }
-                }
-
-                nl.setEtiqueta(newsuc.getNombre());
-                nl.setTObj(newsuc);
-                sucs.inserta(nl);
-                modeldata.setValueAt(newsuc.getNoSuc(), i, 0);
-                modeldata.setValueAt(newsuc.getNombre(), i, 1);
-                modeldata.setValueAt(newsuc.getZona(), i, 2);
+        try {
+            initComponents();
+            
+            
+            lsarchivo nuevo = new lsarchivo();
+            
+            ListaDoblementeLigada nuevalista = new ListaDoblementeLigada();
+            
+            NodoLista nuevonodo = new NodoLista();
+            Sucursales sucnueva = new Sucursales();
+            sucnueva.setNoSuc(1);
+            sucnueva.setNombre("sucursalNueva");
+            sucnueva.setZona(1);
+            nuevonodo.setTObj(sucnueva);
+            nuevonodo.setEtiqueta("sucursalNueva");
+            
+            nuevalista.inserta(nuevonodo);
+            
+            nuevo.InsertarnuevaLista(nuevalista);
+            
+            
+            
+            ListaDoblementeLigada nl = nuevo.SacaDatos();
+            DefaultTableModel dt = new DefaultTableModel(new String[]{"No.Sucursal", "Nombre", "Zona"}, nl.count());
+            jTableSucs.setModel(dt);
+            TableModel modeldata = jTableSucs.getModel();
+            
+            for (int i = 0; i < nl.count(); i++) {
+                NodoLista nodoSuc = nl.getr();
+                Sucursales sucr= (Sucursales) nodoSuc.getTObj();
+                modeldata.setValueAt(sucr.getNoSuc(), i, 0);
+                modeldata.setValueAt(sucr.getNombre(), i, 1);
+                modeldata.setValueAt(sucr.getZona(), i, 2);
+                nl.getr().setSig(nodoSuc.getSig());
             }
+        } catch (IOException ex) {
+            Logger.getLogger(MenuPrinc.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
