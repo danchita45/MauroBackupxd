@@ -8,8 +8,12 @@ import EDD.ArchivoSuc;
 import EDD.ListaDoblementeLigada;
 import EDD.NodoLista;
 import EDD.Sucursales;
+import ioarchico.lsarchivo;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -153,33 +157,25 @@ public class AltaSuc extends javax.swing.JFrame {
     {//GEN-HEADEREND:event_GuardarActionPerformed
 
         if (VerificarCampos()) {
-            ArchivoSuc archivo = new ArchivoSuc("sucursales.txt");
-            ListaDoblementeLigada sucs = new ListaDoblementeLigada();
-            LinkedList<String> lineas = archivo.obtenerTexto();
-            if (lineas != null) {
-                for (int i = 0; i < lineas.size(); i++) {
-                    NodoLista nl = new NodoLista();
-                    Sucursales newsuc = new Sucursales();
-                    String linea = lineas.get(i);
-                    StringTokenizer tokens = new StringTokenizer(linea, ";");
-                    newsuc.setNoSuc(Integer.parseInt(tokens.nextToken()));
-                    newsuc.setNombre(tokens.nextToken());
-                    newsuc.setZona(Integer.parseInt(tokens.nextToken()));
-                    nl.setEtiqueta(newsuc.getNombre());
-                    nl.setTObj(newsuc);
-                    sucs.inserta(nl);
-                }
+            lsarchivo archivo = new lsarchivo();
+            
+            ListaDoblementeLigada sucs = archivo.SacaDatos();
+            if(sucs==null){
+                sucs=new ListaDoblementeLigada();
             }
-
             NodoLista nuevonodo = new NodoLista();
             Sucursales newsuc = new Sucursales();
             newsuc.setNoSuc(Integer.parseInt(noSuctxt.getText()));
             newsuc.setNombre(nombreSuctxt.getText());
             newsuc.setZona(Integer.parseInt(zonatxt.getText()));
-            nuevonodo.setEtiqueta(newsuc.getNombre());
+            nuevonodo.setEtiqueta(Integer.toString(newsuc.getNoSuc()));
             nuevonodo.setTObj(newsuc);
             sucs.inserta(nuevonodo);
-            sucs.reescribe("sucursales.txt");
+            try {
+                archivo.InsertarnuevaLista(sucs);
+            } catch (IOException ex) {
+                Logger.getLogger(AltaSuc.class.getName()).log(Level.SEVERE, null, ex);
+            }
             MenuPrinc menu = new MenuPrinc();
             menu.setVisible(true);
             this.dispose();

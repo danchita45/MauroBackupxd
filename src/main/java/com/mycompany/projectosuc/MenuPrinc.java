@@ -10,7 +10,10 @@ import EDD.ListaDoblementeLigada;
 import EDD.NodoLista;
 import EDD.Sucursales;
 import ioarchico.lsarchivo;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Set;
@@ -25,7 +28,7 @@ import javax.swing.table.TableModel;
  *
  * @author danchita45
  */
-public class MenuPrinc extends javax.swing.JFrame implements Serializable{
+public class MenuPrinc extends javax.swing.JFrame implements Serializable {
 
     private Sucursales sucs;
 
@@ -33,44 +36,28 @@ public class MenuPrinc extends javax.swing.JFrame implements Serializable{
      * Creates new form MenuPrinc
      */
     public MenuPrinc() {
-        try {
-            initComponents();
-            
-            
-            lsarchivo nuevo = new lsarchivo();
-            
-            ListaDoblementeLigada nuevalista = new ListaDoblementeLigada();
-            
-            NodoLista nuevonodo = new NodoLista();
-            Sucursales sucnueva = new Sucursales();
-            sucnueva.setNoSuc(1);
-            sucnueva.setNombre("sucursalNueva");
-            sucnueva.setZona(1);
-            nuevonodo.setTObj(sucnueva);
-            nuevonodo.setEtiqueta("sucursalNueva");
-            
-            nuevalista.inserta(nuevonodo);
-            
-            nuevo.InsertarnuevaLista(nuevalista);
-            
-            
-            
-            ListaDoblementeLigada nl = nuevo.SacaDatos();
+        initComponents();
+
+        lsarchivo nuevo = new lsarchivo();
+
+        ListaDoblementeLigada nl = nuevo.SacaDatos();
+        if (nl != null) {
             DefaultTableModel dt = new DefaultTableModel(new String[]{"No.Sucursal", "Nombre", "Zona"}, nl.count());
             jTableSucs.setModel(dt);
             TableModel modeldata = jTableSucs.getModel();
-            
-            for (int i = 0; i < nl.count(); i++) {
-                NodoLista nodoSuc = nl.getr();
-                Sucursales sucr= (Sucursales) nodoSuc.getTObj();
+            NodoLista nodoSuc = nl.getr();
+            int i = 0;
+            while ( i < nl.count()) {
+                Sucursales sucr = (Sucursales) nodoSuc.getTObj();
                 modeldata.setValueAt(sucr.getNoSuc(), i, 0);
                 modeldata.setValueAt(sucr.getNombre(), i, 1);
                 modeldata.setValueAt(sucr.getZona(), i, 2);
-                nl.getr().setSig(nodoSuc.getSig());
+                nodoSuc = nodoSuc.getSig();
+                i++;
             }
-        } catch (IOException ex) {
-            Logger.getLogger(MenuPrinc.class.getName()).log(Level.SEVERE, null, ex);
+
         }
+
     }
 
     /**
@@ -85,6 +72,7 @@ public class MenuPrinc extends javax.swing.JFrame implements Serializable{
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableSucs = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         altaSuc = new javax.swing.JMenu();
         bajaSuc = new javax.swing.JMenu();
@@ -133,6 +121,13 @@ public class MenuPrinc extends javax.swing.JFrame implements Serializable{
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("jButton2");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
             }
         });
 
@@ -187,7 +182,10 @@ public class MenuPrinc extends javax.swing.JFrame implements Serializable{
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(273, 273, 273)
-                        .addComponent(jButton1)))
+                        .addComponent(jButton1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jButton2)))
                 .addContainerGap(119, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -197,7 +195,9 @@ public class MenuPrinc extends javax.swing.JFrame implements Serializable{
                 .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+                .addComponent(jButton2)
+                .addContainerGap())
         );
 
         pack();
@@ -235,6 +235,21 @@ public class MenuPrinc extends javax.swing.JFrame implements Serializable{
         r.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jMenu2MouseClicked
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        File arch = new File("listas.dat");
+        RandomAccessFile archivorw = null;
+        try {
+            archivorw = new RandomAccessFile(arch, "rw");
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(MenuPrinc.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            archivorw.setLength(0);
+        } catch (IOException ex) {
+            Logger.getLogger(MenuPrinc.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -277,6 +292,7 @@ public class MenuPrinc extends javax.swing.JFrame implements Serializable{
     private javax.swing.JMenu consultaEspecifica;
     private javax.swing.JMenu consultaGeneral;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;

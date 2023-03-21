@@ -8,9 +8,13 @@ import EDD.ArchivoSuc;
 import EDD.ListaDoblementeLigada;
 import EDD.NodoLista;
 import EDD.Sucursales;
+import ioarchico.lsarchivo;
 import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -94,30 +98,19 @@ public class BajaSuc extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton1ActionPerformed
     {//GEN-HEADEREND:event_jButton1ActionPerformed
-        MenuPrinc menu = new MenuPrinc();
-        ArchivoSuc archivo = new ArchivoSuc("sucursales.txt");
-        ListaDoblementeLigada sucs = new ListaDoblementeLigada();
-        LinkedList<String> lineas = archivo.obtenerTexto();
-        if (lineas != null) {
-            for (int i = 0; i < lineas.size(); i++) {
-                NodoLista nl = new NodoLista();
-                Sucursales newsuc = new Sucursales();
-                String linea = lineas.get(i);
-                StringTokenizer tokens = new StringTokenizer(linea, ";");
-                newsuc.setNoSuc(Integer.parseInt(tokens.nextToken()));
-                newsuc.setNombre(tokens.nextToken());
-                newsuc.setZona(Integer.parseInt(tokens.nextToken()));
-                nl.setEtiqueta(newsuc.getNombre());
-                nl.setTObj(newsuc);
-                sucs.inserta(nl);
-            }
+        try {
+            MenuPrinc menu = new MenuPrinc();
+            lsarchivo narc = new lsarchivo();
+            ListaDoblementeLigada sucs = narc.SacaDatos();
+            sucs.eliminar(eliminaNoSuc.getText());
+            
+            narc.InsertarnuevaLista(sucs);
+            
+            menu.setVisible(true);
+            this.dispose();
+        } catch (IOException ex) {
+            Logger.getLogger(BajaSuc.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if(sucs.eliminar(eliminaNoSuc.getText())!=null){
-            JOptionPane.showMessageDialog(rootPane, "La sucursal ha sido Eliminada");
-            sucs.reescribe("sucursales.txt");
-        }
-        menu.setVisible(true);
-        this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

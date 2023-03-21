@@ -13,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.RandomAccessFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,7 +25,9 @@ public class lsarchivo {
 
     public boolean InsertarnuevaLista(Object lista) throws IOException {
         File arch = new File("listas.dat");
-        arch.delete();
+         RandomAccessFile archivorw = new RandomAccessFile(arch, "rw");
+        archivorw.setLength(0);
+        
         File archivo = new File("listas.dat");
         FileOutputStream fos = null;
         try {
@@ -55,7 +58,6 @@ public class lsarchivo {
             while (fis.available() > 0) {
                 ois = new ObjectInputStream(fis);
                 np = (ListaDoblementeLigada) ois.readObject();
-                System.out.println(np);
             }
         } catch (Exception e) {
             System.out.println("Error");
