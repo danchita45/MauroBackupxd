@@ -4,11 +4,13 @@
  */
 package EDD;
 
+import java.io.Serializable;
+
 /**
  *
  * @author danchita45
  */
-public class IngresoEgreso
+public class IngresoEgreso implements Serializable
 {
 
     double monto;

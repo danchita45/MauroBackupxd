@@ -9,6 +9,7 @@ import EDD.IngresoEgreso;
 import EDD.ListaDoblementeLigada;
 import EDD.NodoLista;
 import EDD.Sucursales;
+import ioarchico.lsarchivo;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 import javax.swing.table.DefaultTableModel;
@@ -25,72 +26,107 @@ public class IngresosEgresos extends javax.swing.JFrame {
      */
     public IngresosEgresos() {
         initComponents();
-        
-        double Balancep=0.0;
-        double Balancen=0.0;
-        EDD.ArchivoSuc archivoI = new ArchivoSuc("Ingresos.txt");
-        EDD.ArchivoSuc archivoE = new ArchivoSuc("Egresos.txt");
-        LinkedList<String> lineasI = archivoI.obtenerTexto();
-        LinkedList<String> lineasE = archivoE.obtenerTexto();
-        DefaultTableModel dt = new DefaultTableModel(new String[]{"No.Ingreso", "Sucursal", "Monto", "Fecha"}, lineasI.size());
-        DefaultTableModel dtE = new DefaultTableModel(new String[]{"No.Ingreso", "Sucursal", "Monto", "Fecha"}, lineasE.size());
+
+        double Balancep = 0.0;
+        double Balancen = 0.0;
+
+        lsarchivo narchivo = new lsarchivo();
+        ListaDoblementeLigada ListaGeneral = narchivo.SacaDatos();
+
+        ListaDoblementeLigada paraCI = new ListaDoblementeLigada();
+        ListaDoblementeLigada paraCE = new ListaDoblementeLigada();
+
+        NodoLista nodoSuc = ListaGeneral.getr();
+
+        int i = 0;
+
+        while (i < ListaGeneral.count()) {
+
+            Sucursales sucr = (Sucursales) nodoSuc.getTObj();
+
+            ListaDoblementeLigada listaComodinCI = (ListaDoblementeLigada) sucr.getcI();
+
+            if (listaComodinCI != null) {
+                NodoLista nodosCI = listaComodinCI.getr();
+
+                while (nodosCI != null ) {
+                    
+                    IngresoEgreso IE = (IngresoEgreso) nodosCI.getTObj();
+                    System.out.println(IE);
+                    NodoLista nodopainsertar = new NodoLista();
+                    nodopainsertar.setEtiqueta("nodoCI");
+                    nodopainsertar.setTObj(IE);
+
+                    paraCI.inserta(nodopainsertar);
+                    nodosCI = nodosCI.getSig();
+                }
+            }
+
+            ListaDoblementeLigada listaComodinCE = (ListaDoblementeLigada) sucr.getcE();
+            if (listaComodinCE != null) {
+                NodoLista nodosCE = listaComodinCE.getr();
+                while (nodosCE!= null) {
+                    IngresoEgreso IE = (IngresoEgreso) nodosCE.getTObj();
+
+                    NodoLista nodopainsertar = new NodoLista();
+                    nodopainsertar.setEtiqueta("nodoCE");
+                    nodopainsertar.setTObj(IE);
+
+                    paraCE.inserta(nodopainsertar);
+                    nodosCE = nodosCE.getSig();
+                }
+            }
+            nodoSuc = nodoSuc.getSig();
+            i++;
+        }
+
+        if (paraCI == null) {
+            paraCI = new ListaDoblementeLigada();
+        }
+
+        if (paraCE == null) {
+            paraCE = new ListaDoblementeLigada();
+        }
+
+        DefaultTableModel dt = new DefaultTableModel(new String[]{"No.Ingreso", "Sucursal", "Monto", "Fecha"}, paraCI.count());
+        DefaultTableModel dtE = new DefaultTableModel(new String[]{"No.Ingreso", "Sucursal", "Monto", "Fecha"}, paraCI.count());
         TablaIngresos.setModel(dt);
         TablaEgresos.setModel(dtE);
         TableModel modeldata = TablaIngresos.getModel();
         TableModel modeldataE = TablaEgresos.getModel();
-        if (lineasI != null) {
 
-            //creamos un nuevo nodo lista y una sucursal donde Transformaremos los datos en string a obj
-            for (int j = 0; j < lineasI.size(); j++) {
-                NodoLista nodoI = new NodoLista();
-                IngresoEgreso I = new IngresoEgreso();
-                String lineaI = lineasI.get(j);
-                StringTokenizer tokensI = new StringTokenizer(lineaI, ";");
-                I.setMonto(Double.parseDouble(tokensI.nextToken()));
-                I.setFecha(tokensI.nextToken());
-                I.setDescuento(Double.parseDouble(tokensI.nextToken()));
-                I.setSucursal(Integer.parseInt(tokensI.nextToken()));
-                I.setEI(1);
-                modeldata.setValueAt(j, j, 0);
-                modeldata.setValueAt(I.getSucursal(), j, 1);
-                modeldata.setValueAt(I.getMonto(), j, 2);
-                modeldata.setValueAt(I.getFecha(), j, 3);
-                if(I.getDescuento()!=0.0){
-                    double descuentopercent = I.getDescuento() /100;
-                    Balancep += I.getMonto() *descuentopercent ;
-                }else{
-                   Balancep += I.getMonto() ;
-                }
-            }
+        int j = 0;
+        NodoLista nodosCI = paraCI.getr();
+        while (j < paraCI.count()) {
+            IngresoEgreso sucr = (IngresoEgreso) nodosCI.getTObj();
+
+            modeldata.setValueAt(j + 1, j, 0);
+            modeldata.setValueAt(sucr.getSucursal(), j, 1);
+            modeldata.setValueAt(sucr.getMonto(), j, 2);
+            modeldata.setValueAt(sucr.getFecha(), j, 3);
+            nodosCI = nodosCI.getSig();
+            Balancep += sucr.getMonto();
+            j++;
         }
-        if (lineasE != null) {
-            //creamos un nuevo nodo lista y una sucursal donde Transformaremos los datos en string a obj
-            for (int j = 0; j < lineasE.size(); j++) {
-                NodoLista nodoI = new NodoLista();
-                IngresoEgreso I = new IngresoEgreso();
-                String lineaE = lineasE.get(j);
-                StringTokenizer tokensE = new StringTokenizer(lineaE, ";");
-                I.setMonto(Double.parseDouble(tokensE.nextToken()));
-                I.setFecha(tokensE.nextToken());
-                I.setDescuento(Double.parseDouble(tokensE.nextToken()));
-                
-                I.setSucursal(Integer.parseInt(tokensE.nextToken()));
-                
-                I.setEI(1);
-                modeldataE.setValueAt(j, j, 0);
-                modeldataE.setValueAt(I.getSucursal(), j, 1);
-                modeldataE.setValueAt(I.getMonto(), j, 2);
-                modeldataE.setValueAt(I.getFecha(), j, 3);
-                if(I.getDescuento()!=0.0){
-                    Balancen += (I.getMonto()* (I.getDescuento()/100));
-                }else{
-                   Balancen += (I.getMonto());
-                }
-            }
+
+        int y = 0;
+        NodoLista nodosCE = paraCE.getr();
+        while (y < paraCE.count()) {
+            IngresoEgreso sucr = (IngresoEgreso) nodosCE.getTObj();
+
+            modeldataE.setValueAt(y + 1, y, 0);
+            modeldataE.setValueAt(sucr.getSucursal(), y, 1);
+            modeldataE.setValueAt(sucr.getMonto(), y, 2);
+            modeldataE.setValueAt(sucr.getFecha(), y, 3);
+
+            nodosCE = nodosCE.getSig();
+            Balancen += sucr.getMonto();
+            y++;
         }
+
         double BalanceTotal = Balancep - Balancen;
         balanceTotal.setText(String.valueOf(BalanceTotal));
-        
+
     }
 
     /**

@@ -9,8 +9,12 @@ import EDD.IngresoEgreso;
 import EDD.ListaDoblementeLigada;
 import EDD.NodoLista;
 import EDD.Sucursales;
+import ioarchico.lsarchivo;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -28,7 +32,7 @@ public class RegistrarIE extends javax.swing.JFrame {
     }
 
     public boolean verificarCampos() {
-        if (Montotxt.getText() != "" && Descuentotxt.getText() != "" && fechatxt.getText() != "") {
+        if (montotxt.getText() != "" && descuentotxt.getText() != "" && fechatxt.getText() != "") {
             return true;
         } else {
             return false;
@@ -38,27 +42,19 @@ public class RegistrarIE extends javax.swing.JFrame {
     public void llenarCombox() {
         ComboSucursal.removeAllItems();
         ComboIE.removeAllItems();
-        ArchivoSuc archivo = new ArchivoSuc("sucursales.txt");
-        ListaDoblementeLigada sucs = new ListaDoblementeLigada();
-        LinkedList<String> lineas = archivo.obtenerTexto();
+        lsarchivo nuevo = new lsarchivo();
+
+        ListaDoblementeLigada nl = nuevo.SacaDatos();
 
         ComboIE.addItem("Ingreso");
         ComboIE.addItem("Egreso");
-
-        if (lineas != null) {
-            for (int i = 0; i < lineas.size(); i++) {
-                NodoLista nl = new NodoLista();
-                Sucursales newsuc = new Sucursales();
-                String linea = lineas.get(i);
-                StringTokenizer tokens = new StringTokenizer(linea, ";");
-                newsuc.setNoSuc(Integer.parseInt(tokens.nextToken()));
-                newsuc.setNombre(tokens.nextToken());
-                newsuc.setZona(Integer.parseInt(tokens.nextToken()));
-                nl.setEtiqueta(newsuc.getNombre());
-                nl.setTObj(newsuc);
-                sucs.inserta(nl);
-                ComboSucursal.addItem(newsuc.getNombre());
-            }
+        NodoLista nodoSuc = nl.getr();
+        int i = 0;
+        while (i < nl.count()) {
+            Sucursales sucr = (Sucursales) nodoSuc.getTObj();
+            ComboSucursal.addItem(Integer.toString(sucr.getNoSuc()));
+            nodoSuc = nodoSuc.getSig();
+            i++;
         }
     }
 
@@ -78,10 +74,10 @@ public class RegistrarIE extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         fechatxt = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        Montotxt = new javax.swing.JTextField();
+        montotxt = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        Descuentotxt = new javax.swing.JTextField();
+        descuentotxt = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -110,9 +106,14 @@ public class RegistrarIE extends javax.swing.JFrame {
 
         jLabel4.setText("Fecha (dd/MM/yyyy):");
 
-        Montotxt.addActionListener(new java.awt.event.ActionListener() {
+        montotxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                MontotxtActionPerformed(evt);
+                montotxtActionPerformed(evt);
+            }
+        });
+        montotxt.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                montotxtKeyReleased(evt);
             }
         });
 
@@ -130,9 +131,14 @@ public class RegistrarIE extends javax.swing.JFrame {
             }
         });
 
-        Descuentotxt.addActionListener(new java.awt.event.ActionListener() {
+        descuentotxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DescuentotxtActionPerformed(evt);
+                descuentotxtActionPerformed(evt);
+            }
+        });
+        descuentotxt.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                descuentotxtKeyReleased(evt);
             }
         });
 
@@ -151,7 +157,7 @@ public class RegistrarIE extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(Descuentotxt, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(descuentotxt, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -165,7 +171,7 @@ public class RegistrarIE extends javax.swing.JFrame {
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(ComboIE, 0, 161, Short.MAX_VALUE)
                                 .addComponent(ComboSucursal, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(Montotxt, javax.swing.GroupLayout.Alignment.TRAILING)))))
+                                .addComponent(montotxt, javax.swing.GroupLayout.Alignment.TRAILING)))))
                 .addGap(105, 105, 105))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
@@ -188,10 +194,10 @@ public class RegistrarIE extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(Montotxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(montotxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(Descuentotxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(descuentotxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -213,9 +219,9 @@ public class RegistrarIE extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_fechatxtActionPerformed
 
-    private void MontotxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MontotxtActionPerformed
+    private void montotxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_montotxtActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_MontotxtActionPerformed
+    }//GEN-LAST:event_montotxtActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         MenuPrinc m = new MenuPrinc();
@@ -225,139 +231,100 @@ public class RegistrarIE extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
-        ArchivoSuc archivo = new ArchivoSuc("sucursales.txt");
-        EDD.ArchivoSuc archivoI = new ArchivoSuc("Ingresos.txt");
-        ListaDoblementeLigada sucs = new ListaDoblementeLigada();
-        LinkedList<String> lineas = archivo.obtenerTexto();
-        LinkedList<String> lineasI = archivoI.obtenerTexto();
-        if (lineas != null) {
-            for (int i = 0; i < lineas.size(); i++) {
-                NodoLista nl = new NodoLista();
-                Sucursales newsuc = new Sucursales();
-                String linea = lineas.get(i);
-                StringTokenizer tokens = new StringTokenizer(linea, ";");
-                newsuc.setNoSuc(Integer.parseInt(tokens.nextToken()));
-                newsuc.setNombre(tokens.nextToken());
-                newsuc.setZona(Integer.parseInt(tokens.nextToken()));
-                newsuc.setcI(new ListaDoblementeLigada());
-                newsuc.setcE(new ListaDoblementeLigada());
-                for (int j = 0; j < lineasI.size(); j++) {
-                    NodoLista nodoI = new NodoLista();
-                    IngresoEgreso I = new IngresoEgreso();
-                    String lineaI = lineasI.get(j);
-                    
-                    StringTokenizer tokensI = new StringTokenizer(lineaI, ";");
-                    
-                    I.setMonto(Double.parseDouble(tokensI.nextToken()));
-                    I.setFecha(tokensI.nextToken());
-                    
-                    I.setDescuento(Double.parseDouble(tokensI.nextToken()));
-                    I.setSucursal(Integer.parseInt(tokensI.nextToken()));
-                    
-                    I.setEI(1);
-                    nodoI.setEtiqueta("Ingreso"+j);
-                    nodoI.setTObj(I);
-                    if(I.getSucursal()==newsuc.getNoSuc()){
-                        ListaDoblementeLigada copiadelista = (ListaDoblementeLigada) newsuc.getcI();  
-                        copiadelista.inserta(nodoI);
-                    }
-                }
-                nl.setEtiqueta(newsuc.getNombre());
-                nl.setTObj(newsuc);
-                sucs.inserta(nl);
+        try {
+            lsarchivo archivo = new lsarchivo();
+            ListaDoblementeLigada ldl = archivo.SacaDatos();
+            NodoLista CINodo = new NodoLista();
+            NodoLista nodo = ldl.eliminar((String) ComboSucursal.getSelectedItem());
+
+            Sucursales succomodin = (Sucursales) nodo.getTObj();
+            ListaDoblementeLigada CI = (ListaDoblementeLigada) succomodin.getcI();
+            ListaDoblementeLigada CE = (ListaDoblementeLigada) succomodin.getcE();
+
+            if (CI == null) {
+                CI = new ListaDoblementeLigada();
             }
-        }
+            if (CE == null) {
+                CE = new ListaDoblementeLigada();
+            }
 
-        NodoLista nl = new NodoLista();
-        Sucursales newsuc = new Sucursales();
-        String nombre = (String) ComboSucursal.getSelectedItem();
-        nl = sucs.buscar(nombre);
-        newsuc = (Sucursales) nl.getTObj();
-
-        if (verificarCampos()) {
             String IE = (String) ComboIE.getSelectedItem();
-            IngresoEgreso ingregr = new IngresoEgreso();
+            IngresoEgreso nuevoEgreso = new IngresoEgreso();
+
             if (IE == "Ingreso") {
-                ingregr.setEI(1);
-                if (Descuentotxt.getText() != "0") {
-                    ingregr.setDescuento(Double.parseDouble(Descuentotxt.getText()));
-                } else {
-                    ingregr.setDescuento(0.0);
-                }
-                ingregr.setMonto(Double.parseDouble(Montotxt.getText()));
-                ingregr.setFecha(fechatxt.getText());
-                ingregr.setSucursal(newsuc.getNoSuc());
-                ArchivoSuc archivoIE = new ArchivoSuc("Ingresos.txt");
-                archivoIE.registrar(ingregr.toString());
-                sucs.eliminar(newsuc.getNombre());
-                ListaDoblementeLigada obtenerIngresos = (ListaDoblementeLigada) newsuc.getcI();
-                if (obtenerIngresos == null) {
-                    NodoLista nlparanuevoIngreso = new NodoLista();
-                    obtenerIngresos = new ListaDoblementeLigada();
 
-                    nlparanuevoIngreso.setTObj(ingregr);
-                    nlparanuevoIngreso.setEtiqueta("Ingreso");
-                    obtenerIngresos.inserta(nlparanuevoIngreso);
-                    newsuc.setcI(obtenerIngresos);
+                nuevoEgreso.setDescuento(Double.parseDouble(descuentotxt.getText()));
+                if (nuevoEgreso.getDescuento() != 0.0) {
+                    double descuentopercent = Double.parseDouble(descuentotxt.getText()) / 100;
+                    double Montopercent = Double.parseDouble(montotxt.getText());
+                    double total = Montopercent - (descuentopercent * Montopercent);
+                    nuevoEgreso.setMonto(total);
                 } else {
-                    NodoLista nlparanuevoIngreso = new NodoLista();
-                    nlparanuevoIngreso.setTObj(ingregr);
-                    nlparanuevoIngreso.setEtiqueta("Ingreso");
-                    obtenerIngresos.inserta(nlparanuevoIngreso);
-                    newsuc.setcI(obtenerIngresos);
+                    nuevoEgreso.setMonto(Double.parseDouble(montotxt.getText()));
                 }
-                
-                nl.setTObj(newsuc);
-                sucs.inserta(nl);
-                sucs.reescribe("sucursales.txt");
+                nuevoEgreso.setFecha(fechatxt.getText());
+                nuevoEgreso.setSucursal(Integer.parseInt((String) ComboSucursal.getSelectedItem()));
+                nuevoEgreso.setEI(1);
+
+                CINodo.setEtiqueta("Ingreso");
+                CINodo.setTObj(nuevoEgreso);
+                CI.inserta(CINodo);
+                succomodin.setcI(CI);
+                nodo.setTObj(succomodin);
+                ldl.inserta(nodo);
+
             } else {
-                ingregr.setEI(0);
-                if (Descuentotxt.getText() != "0") {
-                    ingregr.setDescuento(Double.parseDouble(Descuentotxt.getText()));
+                nuevoEgreso.setDescuento(Double.parseDouble(descuentotxt.getText()));
+                if (nuevoEgreso.getDescuento() != 0.0) {
+                    double descuentopercent = Double.parseDouble(descuentotxt.getText()) / 100;
+                    double Montopercent = Double.parseDouble(montotxt.getText());
+                    double total = Montopercent - (descuentopercent * Montopercent);
+                    nuevoEgreso.setMonto(total);
                 } else {
-                    ingregr.setDescuento(0.0);
+                    nuevoEgreso.setMonto(Double.parseDouble(montotxt.getText()));
                 }
-                ingregr.setMonto(Double.parseDouble(Montotxt.getText()));
-                ingregr.setFecha(fechatxt.getText());
-                ingregr.setSucursal(newsuc.getNoSuc());
-                ArchivoSuc archivoIE = new ArchivoSuc("Egresos.txt");
-                archivoIE.registrar(ingregr.toString());
-                sucs.eliminar(newsuc.getNombre());
-                ListaDoblementeLigada obtenerEngresos = (ListaDoblementeLigada) newsuc.getcE();
-                if (obtenerEngresos == null) {
-                    NodoLista nlparanuevoIngreso = new NodoLista();
-                    obtenerEngresos = new ListaDoblementeLigada();
+                nuevoEgreso.setFecha(fechatxt.getText());
+                nuevoEgreso.setSucursal(Integer.parseInt((String) ComboSucursal.getSelectedItem()));
+                nuevoEgreso.setEI(0);
 
-                    nlparanuevoIngreso.setTObj(ingregr);
-                    nlparanuevoIngreso.setEtiqueta("Ingreso");
-                    obtenerEngresos.inserta(nlparanuevoIngreso);
-                    newsuc.setcI(obtenerEngresos);
-                } else {
-                    NodoLista nlparanuevoIngreso = new NodoLista();
-                    nlparanuevoIngreso.setTObj(ingregr);
-                    nlparanuevoIngreso.setEtiqueta("Ingreso");
-                    obtenerEngresos.inserta(nlparanuevoIngreso);
-                    newsuc.setcI(obtenerEngresos);
-                }
-                nl.setTObj(newsuc);
-                sucs.inserta(nl);
-                sucs.reescribe("sucursales.txt");
+                CINodo.setEtiqueta("Egreso");
+                CINodo.setTObj(nuevoEgreso);
+                CE.inserta(CINodo);
+                succomodin.setcE(CE);
+                nodo.setTObj(succomodin);
+                ldl.inserta(nodo);
             }
-        } else {
-            JOptionPane.showMessageDialog(rootPane, "Verifique Campos");
+            archivo.InsertarnuevaLista(ldl);
+            MenuPrinc m = new MenuPrinc();
+            m.setVisible(true);
+            this.dispose();
+        } catch (IOException ex) {
+            Logger.getLogger(RegistrarIE.class.getName()).log(Level.SEVERE, null, ex);
         }
-        MenuPrinc m = new MenuPrinc();
-        m.setVisible(true);
-        this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void ComboSucursalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboSucursalActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_ComboSucursalActionPerformed
 
-    private void DescuentotxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DescuentotxtActionPerformed
+    private void descuentotxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_descuentotxtActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_DescuentotxtActionPerformed
+    }//GEN-LAST:event_descuentotxtActionPerformed
+
+    private void montotxtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_montotxtKeyReleased
+        
+        if (!montotxt.getText().matches("[0-9]{1,5}")) {
+            JOptionPane.showMessageDialog(this, "Este Campo solo Acepta Numeros(para este campo solo 5 digitos)");
+            montotxt.setText("");
+        }
+    }//GEN-LAST:event_montotxtKeyReleased
+
+    private void descuentotxtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_descuentotxtKeyReleased
+        if (!descuentotxt.getText().matches("[0-9]{1,3}")) {
+            JOptionPane.showMessageDialog(this, "Este Campo solo Acepta Numeros");
+            descuentotxt.setText("");
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_descuentotxtKeyReleased
 
     /**
      * @param args the command line arguments
@@ -397,8 +364,7 @@ public class RegistrarIE extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> ComboIE;
     private javax.swing.JComboBox<String> ComboSucursal;
-    private javax.swing.JTextField Descuentotxt;
-    private javax.swing.JTextField Montotxt;
+    private javax.swing.JTextField descuentotxt;
     private javax.swing.JTextField fechatxt;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -407,5 +373,6 @@ public class RegistrarIE extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JTextField montotxt;
     // End of variables declaration//GEN-END:variables
 }

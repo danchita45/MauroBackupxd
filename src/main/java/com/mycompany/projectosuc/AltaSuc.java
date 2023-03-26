@@ -57,6 +57,17 @@ public class AltaSuc extends javax.swing.JFrame {
                 noSuctxtActionPerformed(evt);
             }
         });
+        noSuctxt.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                noSuctxtKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                noSuctxtKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                noSuctxtKeyTyped(evt);
+            }
+        });
 
         jLabel2.setText("Nombre ");
 
@@ -65,12 +76,22 @@ public class AltaSuc extends javax.swing.JFrame {
                 nombreSuctxtActionPerformed(evt);
             }
         });
+        nombreSuctxt.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                nombreSuctxtKeyReleased(evt);
+            }
+        });
 
         jLabel3.setText("Zona");
 
         zonatxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 zonatxtActionPerformed(evt);
+            }
+        });
+        zonatxt.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                zonatxtKeyReleased(evt);
             }
         });
 
@@ -158,10 +179,10 @@ public class AltaSuc extends javax.swing.JFrame {
 
         if (VerificarCampos()) {
             lsarchivo archivo = new lsarchivo();
-            
+
             ListaDoblementeLigada sucs = archivo.SacaDatos();
-            if(sucs==null){
-                sucs=new ListaDoblementeLigada();
+            if (sucs == null) {
+                sucs = new ListaDoblementeLigada();
             }
             NodoLista nuevonodo = new NodoLista();
             Sucursales newsuc = new Sucursales();
@@ -187,6 +208,35 @@ public class AltaSuc extends javax.swing.JFrame {
         a.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void noSuctxtKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_noSuctxtKeyTyped
+
+    }//GEN-LAST:event_noSuctxtKeyTyped
+
+    private void noSuctxtKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_noSuctxtKeyPressed
+
+    }//GEN-LAST:event_noSuctxtKeyPressed
+
+    private void noSuctxtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_noSuctxtKeyReleased
+        if (!noSuctxt.getText().matches("[0-9]{1,3}")) {
+            JOptionPane.showMessageDialog(this, "Este Campo solo Acepta Numeros");
+            noSuctxt.setText("");
+        }
+    }//GEN-LAST:event_noSuctxtKeyReleased
+
+    private void nombreSuctxtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nombreSuctxtKeyReleased
+        if (!nombreSuctxt.getText().matches("[a-zA-Z]*")) {
+            JOptionPane.showMessageDialog(this, "Este Campo solo Acepta Letras");
+            nombreSuctxt.setText("");
+        }
+    }//GEN-LAST:event_nombreSuctxtKeyReleased
+
+    private void zonatxtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_zonatxtKeyReleased
+        if (!noSuctxt.getText().matches("[0-9]{1,3}")) {
+            JOptionPane.showMessageDialog(this, "Este Campo solo Acepta Numeros");
+            noSuctxt.setText("");
+        }
+    }//GEN-LAST:event_zonatxtKeyReleased
 
     public boolean VerificarCampos() {
         if (noSuctxt.getText() != "" && nombreSuctxt.getText() != "" && zonatxt.getText() != "") {

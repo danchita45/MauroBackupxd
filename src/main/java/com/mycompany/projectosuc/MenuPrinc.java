@@ -47,7 +47,7 @@ public class MenuPrinc extends javax.swing.JFrame implements Serializable {
             TableModel modeldata = jTableSucs.getModel();
             NodoLista nodoSuc = nl.getr();
             int i = 0;
-            while ( i < nl.count()) {
+            while (i < nl.count()) {
                 Sucursales sucr = (Sucursales) nodoSuc.getTObj();
                 modeldata.setValueAt(sucr.getNoSuc(), i, 0);
                 modeldata.setValueAt(sucr.getNombre(), i, 1);
@@ -76,9 +76,9 @@ public class MenuPrinc extends javax.swing.JFrame implements Serializable {
         jMenuBar1 = new javax.swing.JMenuBar();
         altaSuc = new javax.swing.JMenu();
         bajaSuc = new javax.swing.JMenu();
+        jMenu3 = new javax.swing.JMenu();
         consultaGeneral = new javax.swing.JMenu();
         consultaEspecifica = new javax.swing.JMenu();
-        jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -124,7 +124,7 @@ public class MenuPrinc extends javax.swing.JFrame implements Serializable {
             }
         });
 
-        jButton2.setText("jButton2");
+        jButton2.setText("VaciarBD");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -147,19 +147,29 @@ public class MenuPrinc extends javax.swing.JFrame implements Serializable {
         });
         jMenuBar1.add(bajaSuc);
 
-        consultaGeneral.setText("Consulta General");
-        jMenuBar1.add(consultaGeneral);
-
-        consultaEspecifica.setText("Consulta Especifica");
-        jMenuBar1.add(consultaEspecifica);
-
-        jMenu1.setText("Ver I/E");
-        jMenu1.addMouseListener(new java.awt.event.MouseAdapter() {
+        jMenu3.setText("Modificar Sucursal");
+        jMenu3.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jMenu1MouseClicked(evt);
+                jMenu3MouseClicked(evt);
             }
         });
-        jMenuBar1.add(jMenu1);
+        jMenuBar1.add(jMenu3);
+
+        consultaGeneral.setText("Consulta General");
+        consultaGeneral.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                consultaGeneralMouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(consultaGeneral);
+
+        consultaEspecifica.setText("Consulta Especifica(Zona)");
+        consultaEspecifica.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                consultaEspecificaMouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(consultaEspecifica);
 
         jMenu2.setText("Registrar I/E");
         jMenu2.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -178,25 +188,25 @@ public class MenuPrinc extends javax.swing.JFrame implements Serializable {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(95, 95, 95)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(273, 273, 273)
+                        .addGap(356, 356, 356)
                         .addComponent(jButton1))
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(109, 109, 109)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 558, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jButton2)))
-                .addContainerGap(119, Short.MAX_VALUE))
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(39, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(11, 11, 11)
+                .addContainerGap()
                 .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
-                .addComponent(jButton2)
+                .addGap(18, 18, Short.MAX_VALUE)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -224,31 +234,49 @@ public class MenuPrinc extends javax.swing.JFrame implements Serializable {
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jMenu1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu1MouseClicked
-        IngresosEgresos E = new IngresosEgresos();
-        E.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_jMenu1MouseClicked
-
     private void jMenu2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu2MouseClicked
         RegistrarIE r = new RegistrarIE();
         r.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jMenu2MouseClicked
 
+    private void consultaGeneralMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_consultaGeneralMouseClicked
+        IngresosEgresos v = new IngresosEgresos();
+        v.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_consultaGeneralMouseClicked
+
+    private void consultaEspecificaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_consultaEspecificaMouseClicked
+        SumaZonasGeneral s = new SumaZonasGeneral();
+        s.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_consultaEspecificaMouseClicked
+
+    private void jMenu3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu3MouseClicked
+        ModificarSuc a = new ModificarSuc();
+        a.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jMenu3MouseClicked
+
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        File arch = new File("listas.dat");
-        RandomAccessFile archivorw = null;
-        try {
-            archivorw = new RandomAccessFile(arch, "rw");
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(MenuPrinc.class.getName()).log(Level.SEVERE, null, ex);
+
+        int op = JOptionPane.showConfirmDialog(this, "¿Está Seguro de Eliminar TODOS los Datos?");
+
+        if (op == JOptionPane.YES_OPTION) {
+            File arch = new File("listas.dat");
+            RandomAccessFile archivorw = null;
+            try {
+                archivorw = new RandomAccessFile(arch, "rw");
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(MenuPrinc.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                archivorw.setLength(0);
+            } catch (IOException ex) {
+                Logger.getLogger(MenuPrinc.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        try {
-            archivorw.setLength(0);
-        } catch (IOException ex) {
-            Logger.getLogger(MenuPrinc.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
@@ -293,8 +321,8 @@ public class MenuPrinc extends javax.swing.JFrame implements Serializable {
     private javax.swing.JMenu consultaGeneral;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableSucs;

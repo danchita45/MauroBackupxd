@@ -49,6 +49,12 @@ public class BajaSuc extends javax.swing.JFrame {
 
         jLabel1.setText("Ingrese Numero de Sucursal a eliminar");
 
+        eliminaNoSuc.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                eliminaNoSucKeyReleased(evt);
+            }
+        });
+
         jButton1.setText("Eliminar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -103,9 +109,9 @@ public class BajaSuc extends javax.swing.JFrame {
             lsarchivo narc = new lsarchivo();
             ListaDoblementeLigada sucs = narc.SacaDatos();
             sucs.eliminar(eliminaNoSuc.getText());
-            
+
             narc.InsertarnuevaLista(sucs);
-            
+
             menu.setVisible(true);
             this.dispose();
         } catch (IOException ex) {
@@ -118,6 +124,13 @@ public class BajaSuc extends javax.swing.JFrame {
         a.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void eliminaNoSucKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_eliminaNoSucKeyReleased
+        if (!eliminaNoSuc.getText().matches("[0-9]{1,3}")) {
+            JOptionPane.showMessageDialog(this, "Este Campo solo Acepta Numeros");
+            eliminaNoSuc.setText("");
+        }
+    }//GEN-LAST:event_eliminaNoSucKeyReleased
 
     /**
      * @param args the command line arguments
